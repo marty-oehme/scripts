@@ -9,6 +9,7 @@ import QOwnNotesTypes 1.0
 
 Script {
     property string tagMarker
+    property bool ignoreDoubleMarkers
     property bool putToBeginning
     property string tagHighlightColor
 
@@ -19,6 +20,13 @@ Script {
             "description": "A word that starts with this characters is recognized as tag",
             "type": "string",
             "default": "@",
+        },
+        {
+            "identifier": "ignoreDoubleMarkers",
+            "name": "Ignore repeated tag markers",
+            "description": "If enabled tags preceded by the same marker multiple times (such as @@no_tag) will be ignored.",
+            "type": "boolean",
+            "default": "false",
         },
         {
             "identifier": "putToBeginning",
@@ -129,7 +137,10 @@ Script {
                     
                     // add the tag if it wasn't in the list
                     if (tagNameList.indexOf(tagName) ==  -1) {
-                        tagNameList.push(tagName);
+                        // add the tag if it contains no duplicate tagMarkers or the check is disabled
+                        if(ignoreDoubleMarkers == false || tagName.startsWith(escapeRegExp(tagMarker)) == false) {
+                          tagNameList.push(tagName);
+                        }
                     }
                 }
                 return tagNameList;
